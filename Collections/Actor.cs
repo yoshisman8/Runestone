@@ -332,16 +332,16 @@ namespace Runestone.Collections
                         int EArmor = 0;
                         int HPArmorDiff = 0;
 
-                        if (Armor > Health)
+                        if (Armor > percent)
                         {
-                            FArmor = Health;
-                            EArmor = (Armor - Health);
+                            FArmor = (int)percent;
+                            EArmor = (Armor - (int)percent);
                             EHealth -= EArmor;
                         }
                         else
                         {
                             FArmor = Armor;
-                            HPArmorDiff = Health - Armor;
+                            HPArmorDiff = (int)percent - Armor;
                         }
 
                         if (Armor > 0)
@@ -374,7 +374,7 @@ namespace Runestone.Collections
                         }
                         else
                         {
-                            for (int i = 0; i < Health; i++)
+                            for (int i = 0; i < (int)percent; i++)
                             {
                                 sb.Append(Dictionaries.Bars["Health"]);
                             }
