@@ -475,7 +475,7 @@ namespace Runestone.Commands
 
                 await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                     new DiscordInteractionResponseBuilder()
-                    .WithContent("**" + actor.Name + "** " + (Value > 0 ? " gained " + Math.Abs(num) + " points of Woe!" : " lost " + Math.Abs(num) + " pints of Woe!")));
+                    .WithContent("**" + actor.Name + "** " + (Value > 0 ? " gained " + Math.Abs(num) + " points of Woe!" : " lost " + Math.Abs(num) + " points of Woe!")));
             }
         }
         [SlashCommand("Currency", "Change your active character's Currency.")]

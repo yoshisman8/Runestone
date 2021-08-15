@@ -73,15 +73,15 @@ namespace Runestone
 
 
             // Register all command modules.
-            Slash.RegisterCommands<CharacterModule>(875387462552289331);
-            Slash.RegisterCommands<HelpModule>(875387462552289331);
-            Slash.RegisterCommands<ContentModule>(875387462552289331);
-            Slash.RegisterCommands<TalentModule>(875387462552289331);
-            Slash.RegisterCommands<ItemModule>(875387462552289331);
-            Slash.RegisterCommands<HomebrewContentModule>(875387462552289331);
-            Slash.RegisterCommands<RollingCommands>(875387462552289331);
-            Slash.RegisterCommands<ConditionModule>(875387462552289331);
-            Slash.RegisterCommands<EncounterModule>(875387462552289331);
+            Slash.RegisterCommands<CharacterModule>();
+            Slash.RegisterCommands<HelpModule>();
+            Slash.RegisterCommands<ContentModule>();
+            Slash.RegisterCommands<TalentModule>();
+            Slash.RegisterCommands<ItemModule>();
+            Slash.RegisterCommands<HomebrewContentModule>();
+            Slash.RegisterCommands<RollingCommands>();
+            Slash.RegisterCommands<ConditionModule>();
+            Slash.RegisterCommands<EncounterModule>();
 
             // Register the Button Handling method into the Client.
             client.ComponentInteractionCreated += services.GetService<ButtonService>().HandleButtonAsync;
