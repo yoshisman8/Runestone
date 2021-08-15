@@ -34,8 +34,40 @@ namespace Runestone.Commands
 			}
 
 			Actor actor = User.Active;
+			if(Skill.ToLower()== "woe" && Skill.ToLower() == "tested")
+            {
+				var dice = Roller.Roll("1d20");
+				var data = new Runestone.Collections.RollData()
+				{
+					Action = -1,
+					Actor = actor.Id,
+					Judgement = 13,
+					Fortune = 17,
+					Skill = "tested",
+					Discipline = "t",
+					Dice = (int)dice.Value,
+					Boosts = 0,
+					Encounter = 0,
+					Modifiers = 0
+				};
 
-			if(Dictionaries.Skills.TryGetValue(Skill.ToLower(),out string value))
+				var embed = Utils.EmbedRoll(data);
+				var serial = data.Serialize();
+
+				actor.Woe = 0;
+				Utils.UpdateActor(actor);
+
+				await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+					new DiscordInteractionResponseBuilder()
+					.WithContent($"{actor.Name}'s resolve is being tested... (Woe reset to 0).")
+					.AddEmbed(embed)
+					.AddComponents(new DiscordComponent[]
+					{
+						new DiscordButtonComponent(ButtonStyle.Primary,"boost"+serial,"Boost",false, new DiscordComponentEmoji(875526328500232203))
+					}));
+				return;
+			}
+			else if(Dictionaries.Skills.TryGetValue(Skill.ToLower(),out string value))
             {
 				if(actor.Conditions.Any(x=>x.Discipline != "none" && x.Skill.ToLower() == Skill.ToLower()))
                 {

@@ -90,7 +90,7 @@ namespace Runestone.Collections
             if (page == 0)
             {
                 var MainPage = new DiscordEmbedBuilder()
-                .WithTitle(this.Name)
+                .WithTitle(this.Name + " Lv." + Vars["level"])
                 .WithColor(new DiscordColor(Color))
                 .WithThumbnail(Image)
                 .WithDescription(Dictionaries.Icons["Health"] + " **Health**: [" + Health + "/" + Vars["health"] + "] " + (GetTotalArmor() > 0 ? ("[" + Armor + "/" + GetTotalArmor() + "]") : "") + "\n"
@@ -153,7 +153,7 @@ namespace Runestone.Collections
             {
 
                 var Skills = new DiscordEmbedBuilder()
-                    .WithTitle(this.Name)
+                    .WithTitle(this.Name+" Lv."+Vars["level"])
                     .WithColor(new DiscordColor(Color))
                     .WithThumbnail(Image)
                     .WithDescription(Dictionaries.Icons["Health"] + " **Health**: [" + Health + "/" + Vars["health"] + "] " + (GetTotalArmor() > 0 ? ("[" + Armor + "/" + GetTotalArmor() + "]") : "") + "\n"
@@ -201,7 +201,7 @@ namespace Runestone.Collections
             if (page >= 2)
             {
                 var TalentPage = new DiscordEmbedBuilder()
-                    .WithTitle(this.Name)
+                    .WithTitle(this.Name + " Lv." + Vars["level"])
                     .WithColor(new DiscordColor(Color))
                     .WithThumbnail(Image)
                     .WithDescription(Dictionaries.Icons["Health"] + " **Health**: [" + Health + "/" + Vars["health"] + "] " + (GetTotalArmor() > 0 ? ("[" + Armor + "/" + GetTotalArmor() + "]") : "") + "\n"

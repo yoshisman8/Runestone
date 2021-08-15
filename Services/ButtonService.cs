@@ -175,7 +175,7 @@ namespace Runestone.Services
 
                 await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
                     new DiscordInteractionResponseBuilder()
-                    .WithContent("Removed talent **" + t.Name + "** from " + a.Name + "."));
+                    .WithContent("Removed talent/action **" + t.Name + "** from " + a.Name + "."));
             }
             else if (e.Id.StartsWith("itemdel"))
             {
@@ -209,6 +209,8 @@ namespace Runestone.Services
 
                 a.Energy -= 1;
 
+                a.Woe++;
+
                 utils.UpdateActor(a);
 
                 data.Boosts++;
@@ -219,11 +221,11 @@ namespace Runestone.Services
 
                 await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
                     new DiscordInteractionResponseBuilder()
-                    .WithContent("Spent " + data.Boosts + " energy boosting!")
+                    .WithContent($"{a.Name}'s Resolve is being tested...\nSpent {data.Boosts} Energy and Woe boosting!")
                     .AddEmbed(Embed)
                     .AddComponents(new DiscordComponent[]
                     {
-                        new DiscordButtonComponent(ButtonStyle.Primary,"boost"+serial,"Boost",false, new DiscordComponentEmoji(875526327774617671))
+                        new DiscordButtonComponent(ButtonStyle.Primary,"boost"+serial,"Boost",false, new DiscordComponentEmoji(875526328500232203))
                     }));
             }
             else if (e.Id.StartsWith("init"))
