@@ -34,7 +34,7 @@ namespace Runestone.Commands
 			}
 
 			Actor actor = User.Active;
-			if(Skill.ToLower()== "woe" && Skill.ToLower() == "tested")
+			if(Skill.ToLower()== "woe" || Skill.ToLower() == "tested")
             {
 				var dice = Roller.Roll("1d20");
 				var data = new Runestone.Collections.RollData()
