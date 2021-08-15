@@ -323,6 +323,67 @@ namespace Runestone.Collections
                             }
                         } 
                     }
+                    else
+                    {
+                        decimal percent = ((decimal)Math.Max(Math.Min(Health, max), 0) / (decimal)max) * 10;
+                        var EHealth = 10 - Math.Ceiling(percent);
+
+                        int FArmor = 0;
+                        int EArmor = 0;
+                        int HPArmorDiff = 0;
+
+                        if (Armor > Health)
+                        {
+                            FArmor = Health;
+                            EArmor = (Armor - Health);
+                            EHealth -= EArmor;
+                        }
+                        else
+                        {
+                            FArmor = Armor;
+                            HPArmorDiff = Health - Armor;
+                        }
+
+                        if (Armor > 0)
+                        {
+                            for (int i = 0; i < FArmor; i++)
+                            {
+                                sb.Append(Dictionaries.Bars["Armor"]);
+                            }
+                            if (HPArmorDiff > 0)
+                            {
+                                for (int i = 0; i < HPArmorDiff; i++)
+                                {
+                                    sb.Append(Dictionaries.Bars["Health"]);
+                                }
+                            }
+                            if (EArmor > 0)
+                            {
+                                for (int i = 0; i < EArmor; i++)
+                                {
+                                    sb.Append(Dictionaries.Bars["ArmorEmpty"]);
+                                }
+                            }
+                            if (EHealth > 0)
+                            {
+                                for (int i = 0; i < EHealth; i++)
+                                {
+                                    sb.Append(Dictionaries.Bars["Empty"]);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < Health; i++)
+                            {
+                                sb.Append(Dictionaries.Bars["Health"]);
+                            }
+                            for (int i = 0; i < EHealth; i++)
+                            {
+                                sb.Append(Dictionaries.Bars["Empty"]);
+                            }
+                        }
+                    }
                     break;
                 case 2:
                     max = Vars["energy"];
