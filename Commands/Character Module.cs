@@ -48,7 +48,7 @@ namespace Runestone.Commands
                     }
 
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
-                        User.Active.BuildSheet(0));
+                        query.FirstOrDefault().BuildSheet(0));
                 }
                 else
                 {
