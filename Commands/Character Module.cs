@@ -204,7 +204,7 @@ namespace Runestone.Commands
 
                         await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                             new DiscordInteractionResponseBuilder()
-                            .WithContent("Updated **" + actor + "**'s image!")
+                            .WithContent("Updated **" + actor.Name + "**'s image!")
                             .AddEmbed(new DiscordEmbedBuilder().WithImageUrl(Value).Build()));
                         return;
                     }
