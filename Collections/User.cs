@@ -13,10 +13,5 @@ namespace Runestone.Collections
 
         [BsonRef("Actors")]
         public Actor Active { get; set; } = null;
-
-        [BsonRef("Actionables")]
-        public List<Actionable> HomebrewActions { get; set; } = new List<Actionable>();
-        [BsonRef("Items")]
-        public List<Item> HomebrewItems { get; set; } = new List<Item>();
     }
 }

@@ -14,16 +14,17 @@ namespace Runestone.Collections
         public Combatant Current { get; set; } = null;
         public bool Started { get; set; } = false;
         public bool Active { get; set; } = false;
+        public bool Refresh { get; set; } = true;
     }
     public class Combatant
     {
         public double Initiative { get; set; }
         public bool player { get; set; }
-        [BsonRef("Actors")]
-        public Actor Actor { get; set; }
-        [BsonRef("Adversaries")]
-        public Adversary Adversary { get; set; }
+        public string Name { get; set; }
+        public string Image { get; set; }
+        public int Actor { get; set; }
         public int Tile { get; set; }
+        public int Actions { get; set; } = 0;
         
     }
 }

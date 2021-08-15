@@ -5,6 +5,7 @@ using System.Linq;
 using LiteDB;
 using DSharpPlus.Entities;
 using Runestone.Services;
+using DSharpPlus;
 
 namespace Runestone.Collections
 {
@@ -84,91 +85,164 @@ namespace Runestone.Collections
         }
         public DiscordInteractionResponseBuilder BuildSheet(int page)
         {
-            List<DiscordEmbed> Embeds = new List<DiscordEmbed>();
+            DiscordEmbed Embeds = null;
 
-            var MainPage = new DiscordEmbedBuilder()
+            if (page == 0)
+            {
+                var MainPage = new DiscordEmbedBuilder()
                 .WithTitle(this.Name)
                 .WithColor(new DiscordColor(Color))
                 .WithThumbnail(Image)
                 .WithDescription(Dictionaries.Icons["Health"] + " **Health**: [" + Health + "/" + Vars["health"] + "] " + (GetTotalArmor() > 0 ? ("[" + Armor + "/" + GetTotalArmor() + "]") : "") + "\n"
                 + BuildBar(1) + "\n"
                 + Dictionaries.Icons["Energy"] + " **Energy**: [" + Energy + "/" + Vars["energy"] + "]" + "\n"
-                + BuildBar(2) +"\n"
+                + BuildBar(2) + "\n"
                 + Dictionaries.Icons["Woe"] + " **Woe**: [" + Woe + "/" + 9 + "]" + "\n"
                 + BuildBar(3))
                 .AddField("Attributes", "**Vigor**: " + Vars["vigor"] + "\n" +
                 "**Agility**: " + Vars["agility"] + "\n\n" +
                 "**Insight**: " + Vars["insight"] + "\n" +
                 "**Presence**: " + Vars["presence"], true)
-                .AddField("Disciplines", Dictionaries.Icons["Exploration"]+" [8] [9~" + (Vars["exploration"] - 1) + "] [" + Vars["exploration"] + "]\n" +
+                .AddField("Disciplines", Dictionaries.Icons["Exploration"] + " [8] [9~" + (Vars["exploration"] - 1) + "] [" + Vars["exploration"] + "]\n" +
                 Dictionaries.Icons["Survival"] + " [8] [9~" + (Vars["survival"] - 1) + "] [" + Vars["survival"] + "]\n" +
                 Dictionaries.Icons["Combat"] + " [8] [9~" + (Vars["combat"] - 1) + "] [" + Vars["combat"] + "]\n" +
                 Dictionaries.Icons["Social"] + " [8] [9~" + (Vars["social"] - 1) + "] [" + Vars["social"] + "]\n" +
                 Dictionaries.Icons["Magic"] + " [8] [9~" + (Vars["magic"] - 1) + "] [" + Vars["magic"] + "]\n", true);
 
-            var sb = new StringBuilder();
+                var sb = new StringBuilder();
 
-            
-            MainPage.AddField("Inventory", Dictionaries.Icons["Currency"] + " " + Vars["currency"] + " | " + Dictionaries.Icons["Material"] + " " + Vars["material"] + " | " + Dictionaries.Icons["Consumable"] + " " + Vars["consumable"] + "\n" +
-                sb.ToString());
-            sb.Clear();
-            if(Conditions.Count > 0)
-            {
-                foreach(var c in Conditions)
+
+                foreach (var I in Inventory.OrderByDescending(x=>x.Equipped).ThenBy(x=>x.Name))
                 {
-                    sb.AppendLine("[-" + c.Penalty + "]" + " " + c.Name + (c.Discipline.NullorEmpty() ? (" (" + c.Discipline + ")") : "") + (c.Discipline.NullorEmpty() ? (" {" + c.Discipline + "}") : ""));
+                    switch (I.Type)
+                    {
+                        case ItemType.Armor:
+                            sb.AppendLine("• " + I.Name + (I.Equipped?" [Worn]":""));
+                            break;
+                        case ItemType.Asset:
+                            sb.AppendLine("• " + I.Name + " " + (I.Spent ? Dictionaries.Icons["Charging"] : Dictionaries.Icons["Usable"]));
+                            break;
+                        case ItemType.Weapon:
+                            sb.AppendLine("• " + I.Name + (I.Equipped ? " [Wielded]" : ""));
+                            break;
+                        case ItemType.Shield:
+                            sb.AppendLine("• " + I.Name + (I.Equipped ? " [Held]" : ""));
+                            break;
+                    }
                 }
-                MainPage.AddField("Conditions", sb.ToString());
+
+                MainPage.AddField("Inventory", Dictionaries.Icons["Currency"] + " " + Vars["currency"] + " | " + Dictionaries.Icons["Material"] + " " + Vars["material"] + " | " + Dictionaries.Icons["Consumable"] + " " + Vars["consumable"] + "\n" +
+                    sb.ToString());
+
+                sb.Clear();
+
+                if (Conditions.Count > 0)
+                {
+                    foreach (var c in Conditions)
+                    {
+                        sb.AppendLine("[-" + c.Penalty + "]" + " " + c.Name + (c.Discipline.NullorEmpty() ? (" (" + c.Discipline + ")") : "") + (c.Discipline.NullorEmpty() ? (" {" + c.Discipline + "}") : ""));
+                    }
+                    MainPage.AddField("Conditions", sb.ToString());
+                }
+
+                Embeds = MainPage.Build();
             }
-            Embeds.Add(MainPage);
 
-            var Skills = new DiscordEmbedBuilder()
-                .WithTitle(this.Name)
-                .WithColor(new DiscordColor(Color))
-                .WithThumbnail(Image)
-                .WithDescription(Dictionaries.Icons["Health"] + " **Health**: [" + Health + "/" + Vars["health"] + "] " + (GetTotalArmor() > 0 ? ("[" + Armor + "/" + GetTotalArmor() + "]") : "") + "\n"
-                + BuildBar(1) + "\n"
-                + Dictionaries.Icons["Energy"] + " **Energy**: [" + Energy + "/" + Vars["energy"] + "]" + "\n"
-                + BuildBar(2) +"\n"
-                + Dictionaries.Icons["Woe"] + " **Woe**: [" + Woe + "/" + 9 + "]" + "\n"
-                + BuildBar(3))
-                .AddField("Exploration","• ["+Vars["awareness"]+"] Awareness: ["+(8-Vars["awareness"])+"] ["+ (8 - Vars["awareness"]+1)+"~"+ (Vars["exploration"] - 1) + "] ["+Vars["exploration"]+"]\n"+
-                "• [" + Vars["balance"] + "] Balance: [" + (8 - Vars["balance"]) + "] [" + (8 - Vars["balance"] + 1) + "~" + (Vars["exploration"] - 1) + "] [" + Vars["exploration"] + "]\n" +
-                "• [" + Vars["cartography"] + "] Cartography: [" + (8 - Vars["cartography"]) + "] [" + (8 - Vars["cartography"] + 1) + "~" + (Vars["exploration"] - 1) + "] [" + Vars["exploration"] + "]\n" +
-                "• [" + Vars["climb"] + "] Climb: [" + (8 - Vars["climb"]) + "] [" + (8 - Vars["climb"] + 1) + "~" + (Vars["exploration"] - 1) + "] [" + Vars["exploration"] + "]\n" +
-                "• [" + Vars["cook"] + "] Cook: [" + (8 - Vars["cook"]) + "] [" + (8 - Vars["cook"] + 1) + "~" + (Vars["exploration"] - 1) + "] [" + Vars["exploration"] + "]\n" +
-                "• [" + Vars["jump"] + "] Jump: [" + (8 - Vars["jump"]) + "] [" + (8 - Vars["jump"] + 1) + "~" + (Vars["exploration"] - 1) + "] [" + Vars["exploration"] + "]\n" +
-                "• [" + Vars["lift"] + "] Lift: [" + (8 - Vars["lift"]) + "] [" + (8 - Vars["lift"] + 1) + "~" + (Vars["exploration"] - 1) + "] [" + Vars["exploration"] + "]\n" +
-                "• [" + Vars["reflex"] + "] Reflex: [" + (8 - Vars["reflex"]) + "] [" + (8 - Vars["reflex"] + 1) + "~" + (Vars["exploration"] - 1) + "] [" + Vars["exploration"] + "]",true)
-                .AddField("Survival", "• [" + Vars["craft"] + "] Craft: [" + (8 - Vars["craft"]) + "] [" + (8 - Vars["craft"] + 1) + "~" + (Vars["survival"] - 1) + "] [" + Vars["survival"] + "]\n" +
-                "• [" + Vars["forage"] + "] Forage: [" + (8 - Vars["forage"]) + "] [" + (8 - Vars["forage"] + 1) + "~" + (Vars["survival"] - 1) + "] [" + Vars["survival"] + "]\n" +
-                "• [" + Vars["fortitude"] + "] Fortitude: [" + (8 - Vars["fortitude"]) + "] [" + (8 - Vars["fortitude"] + 1) + "~" + (Vars["survival"] - 1) + "] [" + Vars["survival"] + "]\n" +
-                "• [" + Vars["heal"] + "] Heal: [" + (8 - Vars["heal"]) + "] [" + (8 - Vars["heal"] + 1) + "~" + (Vars["survival"] - 1) + "] [" + Vars["survival"] + "]\n" +
-                "• [" + Vars["nature"] + "] Nature: [" + (8 - Vars["nature"]) + "] [" + (8 - Vars["nature"] + 1) + "~" + (Vars["survival"] - 1) + "] [" + Vars["survival"] + "]\n" +
-                "• [" + Vars["sneak"] + "] Sneak: [" + (8 - Vars["sneak"]) + "] [" + (8 - Vars["sneak"] + 1) + "~" + (Vars["survival"] - 1) + "] [" + Vars["survival"] + "]\n" +
-                "• [" + Vars["swim"] + "] Swim: [" + (8 - Vars["swim"]) + "] [" + (8 - Vars["swim"] + 1) + "~" + (Vars["survival"] - 1) + "] [" + Vars["survival"] + "]\n" +
-                "• [" + Vars["track"] + "] Track: [" + (8 - Vars["track"]) + "] [" + (8 - Vars["track"] + 1) + "~" + (Vars["survival"] - 1) + "] [" + Vars["survival"] + "]",true)
-                .AddField("Social", "• [" + Vars["empathy"] + "] Empathy: [" + (8 - Vars["empathy"]) + "] [" + (8 - Vars["empathy"] + 1) + "~" + (Vars["social"] - 1) + "] [" + Vars["social"] + "]\n" +
-                "• [" + Vars["handle-animal"] + "] Handle Animal: [" + (8 - Vars["handle-animal"]) + "] [" + (8 - Vars["handle-animal"] + 1) + "~" + (Vars["social"] - 1) + "] [" + Vars["social"] + "]\n" +
-                "• [" + Vars["influence"] + "] Influence: [" + (8 - Vars["influence"]) + "] [" + (8 - Vars["influence"] + 1) + "~" + (Vars["social"] - 1) + "] [" + Vars["social"] + "]\n" +
-                "• [" + Vars["intimidate"] + "] Intimidate: [" + (8 - Vars["intimidate"]) + "] [" + (8 - Vars["intimidate"] + 1) + "~" + (Vars["social"] - 1) + "] [" + Vars["social"] + "]\n" +
-                "• [" + Vars["lead"] + "] Lead: [" + (8 - Vars["lead"]) + "] [" + (8 - Vars["lead"] + 1) + "~" + (Vars["social"] - 1) + "] [" + Vars["social"] + "]\n" +
-                "• [" + Vars["negotiate"] + "] Negotiate: [" + (8 - Vars["negotiate"]) + "] [" + (8 - Vars["negotiate"] + 1) + "~" + (Vars["social"] - 1) + "] [" + Vars["social"] + "]\n" +
-                "• [" + Vars["perform"] + "] Perform: [" + (8 - Vars["perform"]) + "] [" + (8 - Vars["perform"] + 1) + "~" + (Vars["social"] - 1) + "] [" + Vars["social"] + "]\n" +
-                "• [" + Vars["resolve"] + "] Resolve: [" + (8 - Vars["resolve"]) + "] [" + (8 - Vars["resolve"] + 1) + "~" + (Vars["social"] - 1) + "] [" + Vars["social"] + "]")
-                .AddField("Combat", "• [" + Vars["aim"] + "] Aim: [" + (8 - Vars["aim"]) + "] [" + (8 - Vars["aim"] + 1) + "~" + (Vars["combat"] - 1) + "] [" + Vars["combat"] + "]\n" +
-                "• [" + Vars["defend"] + "] Defend: [" + (8 - Vars["defend"]) + "] [" + (8 - Vars["defend"] + 1) + "~" + (Vars["combat"] - 1) + "] [" + Vars["combat"] + "]\n" +
-                "• [" + Vars["fight"] + "] Fight: [" + (8 - Vars["fight"]) + "] [" + (8 - Vars["fight"] + 1) + "~" + (Vars["combat"] - 1) + "] [" + Vars["combat"] + "]\n" +
-                "• [" + Vars["maneuver"] + "] Maneuver: [" + (8 - Vars["maneuver"]) + "] [" + (8 - Vars["maneuver"] + 1) + "~" + (Vars["combat"] - 1) + "] [" + Vars["combat"] + "]",true)
-                .AddField("Magic", "• [" + Vars["control"] + "] Control: [" + (8 - Vars["control"]) + "] [" + (8 - Vars["control"] + 1) + "~" + (Vars["magic"] - 1) + "] [" + Vars["magic"] + "]\n" +
-                "• [" + Vars["create"] + "] Create: [" + (8 - Vars["create"]) + "] [" + (8 - Vars["create"] + 1) + "~" + (Vars["magic"] - 1) + "] [" + Vars["magic"] + "]\n" +
-                "• [" + Vars["maim"] + "] Maim: [" + (8 - Vars["maim"]) + "] [" + (8 - Vars["maim"] + 1) + "~" + (Vars["magic"] - 1) + "] [" + Vars["magic"] + "]\n" +
-                "• [" + Vars["mend"] + "] Mend: [" + (8 - Vars["mend"]) + "] [" + (8 - Vars["mend"] + 1) + "~" + (Vars["magic"] - 1) + "] [" + Vars["magic"] + "]",true);
+        
+            if(page == 1)
+            {
 
-            Embeds.Add(Skills);
+                var Skills = new DiscordEmbedBuilder()
+                    .WithTitle(this.Name)
+                    .WithColor(new DiscordColor(Color))
+                    .WithThumbnail(Image)
+                    .WithDescription(Dictionaries.Icons["Health"] + " **Health**: [" + Health + "/" + Vars["health"] + "] " + (GetTotalArmor() > 0 ? ("[" + Armor + "/" + GetTotalArmor() + "]") : "") + "\n"
+                    + BuildBar(1) + "\n"
+                    + Dictionaries.Icons["Energy"] + " **Energy**: [" + Energy + "/" + Vars["energy"] + "]" + "\n"
+                    + BuildBar(2) + "\n"
+                    + Dictionaries.Icons["Woe"] + " **Woe**: [" + Woe + "/" + 9 + "]" + "\n"
+                    + BuildBar(3))
+                    .AddField(Dictionaries.Icons["Exploration"] + "Exploration", "•  Awareness: [" + Vars["awareness"] + "]\n" +
+                    "• Balance: [" + Vars["balance"] + "]\n" +
+                    "• Cartography: [" + Vars["cartography"] + "]\n" +
+                    "• Climb: [" + Vars["climb"] + "]\n" +
+                    "• Jump: [" + Vars["jump"] + "]\n" +
+                    "• Lift: [" + Vars["lift"] + "]\n" +
+                    "• Reflex: [" + Vars["reflex"] + "]\n" +
+                    "• Track: [" + Vars["track"] + "]", true)
+                    .AddField(Dictionaries.Icons["Survival"] + "Survival", "• Cook: [" + Vars["cook"] + "]\n" +
+                    "• Craft: [" + Vars["craft"] + "]\n" +
+                    "• Forage: [" + Vars["forage"] + "]\n" +
+                    "• Fortitude: [" + Vars["fortitude"] + "]\n" +
+                    "• Heal: [" + Vars["heal"] + "]\n" +
+                    "• Nature: [" + Vars["nature"] + "]\n" +
+                    "• Sneak: [" + Vars["sneak"] + "]\n" +
+                    "• Swim: [" + Vars["swim"] + "]", true)
+                    .AddField(Dictionaries.Icons["Social"] + "Social", "• Empathy: [" + Vars["empathy"] + "]\n" +
+                    "• Handle Animal:[" + Vars["handle-animal"] + "]\n" +
+                    "• Influence: [" + Vars["influence"] + "]\n" +
+                    "• Intimidate: [" + Vars["intimidate"] + "]\n" +
+                    "• Lead: [" + Vars["lead"] + "]\n" +
+                    "• Negotiate: [" + Vars["negotiate"] + "]\n" +
+                    "• Perform: [" + Vars["perform"] + "]\n" +
+                    "• Resolve:  [" + Vars["resolve"] + "]", true)
+                    .AddField(Dictionaries.Icons["Combat"] + "Combat", "• Aim: [" + Vars["aim"] + "] \n" +
+                    "• Defend: [" + Vars["defend"] + "]\n" +
+                    "• Fight: [" + Vars["fight"] + "]\n" +
+                    "• Maneuver: [" + Vars["maneuver"] + "]", true)
+                    .AddField(Dictionaries.Icons["Magic"] + "Magic", "• Control: [" + Vars["control"] + "]\n" +
+                    "• Create: [" + Vars["create"] + "]\n" +
+                    "• Maim: [" + Vars["maim"] + "]\n" +
+                    "• Mend:  [" + Vars["mend"] + "]", true);
 
+                Embeds = Skills.Build();
+            }
+
+            if (page >= 2)
+            {
+                var TalentPage = new DiscordEmbedBuilder()
+                    .WithTitle(this.Name)
+                    .WithColor(new DiscordColor(Color))
+                    .WithThumbnail(Image)
+                    .WithDescription(Dictionaries.Icons["Health"] + " **Health**: [" + Health + "/" + Vars["health"] + "] " + (GetTotalArmor() > 0 ? ("[" + Armor + "/" + GetTotalArmor() + "]") : "") + "\n"
+                    + BuildBar(1) + "\n"
+                    + Dictionaries.Icons["Energy"] + " **Energy**: [" + Energy + "/" + Vars["energy"] + "]" + "\n"
+                    + BuildBar(2) + "\n"
+                    + Dictionaries.Icons["Woe"] + " **Woe**: [" + Woe + "/" + 9 + "]" + "\n"
+                    + BuildBar(3));
+                var Tals = new List<Actionable>();
+                int StartPoint = 0 + (4 * (page - 2));
+
+                for(int i = 0; i < 4; i++)
+                {
+                    if (StartPoint + i >= Talents.Count) break;
+                    Tals.Add(Talents[StartPoint + i]);
+                }
+                foreach(var t in Tals)
+                {
+                    TalentPage.AddField(t.Name, t.Summary());
+                }
+                Embeds = TalentPage;
+            }
+
+            var buttons = new List<DiscordComponent>()
+            {
+                new DiscordButtonComponent(ButtonStyle.Primary,"s0","Main Page"),
+                new DiscordButtonComponent(ButtonStyle.Primary,"s1","Skills")
+            };
+
+            if (Talents.Count > 0)
+            {
+                int TalentPages = (int)Math.Ceiling(((double)Talents.Count / (double)4));
+                for (int t = 0; t < TalentPages; t++)
+                {
+                    buttons.Add(new DiscordButtonComponent(ButtonStyle.Primary, "s" + (2 + t), "Talents (" + (t + 1) + ")"));
+                }
+            }
+            
             var builder = new DiscordInteractionResponseBuilder()
-                .AddEmbed(Embeds[page]);
+                .AddEmbed(Embeds)
+                .AddComponents(buttons);
 
             return builder;
         }
@@ -254,10 +328,10 @@ namespace Runestone.Collections
                     max = Vars["energy"];
                     if (max <= 10)
                     {
-                        int diff = max - Energy;
+                        int diff = max - Math.Max(Math.Min(Energy, max), 0);
                         for (int i = 0; i < Energy; i++)
                         {
-                            sb.Append(Dictionaries.Bars["EN"]);
+                            sb.Append(Dictionaries.Bars["Energy"]);
                         }
                         for (int i = 0; i < diff; i++)
                         {
@@ -266,11 +340,11 @@ namespace Runestone.Collections
                     }
                     else
                     {
-                        decimal percent = ((decimal)Energy / (decimal)max) * 10;
+                        decimal percent = ((decimal)Math.Max(Math.Min(Energy,max), 0) / (decimal)max) * 10;
                         var diff = 10 - Math.Ceiling(percent);
                         for (int i = 0; i < percent; i++)
                         {
-                            sb.Append(Dictionaries.Bars["EN"]);
+                            sb.Append(Dictionaries.Bars["Energy"]);
                         }
                         for (int i = 0; i < diff; i++)
                         {
@@ -304,6 +378,6 @@ namespace Runestone.Collections
         public int Penalty { get; set; }
         public string Skill { get; set; }
         public string Discipline { get; set; }
-    }
+    } 
     
 }
