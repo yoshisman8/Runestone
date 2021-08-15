@@ -24,12 +24,31 @@ namespace Runestone.Commands
 
             if(Action == CharCommands.View)
             {
-                if (User.Active == null)
+                if (Name.NullorEmpty() && User.Active == null)
                 {
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                         new DiscordInteractionResponseBuilder()
                         .WithContent("You currently have no Active user. Use the `/Character Select` command to select a character."));
                     return;
+                }
+                else if (!Name.NullorEmpty())
+                {
+                    var col = db.GetCollection<Actor>("Actors");
+
+                    ulong[] users = context.Guild.GetAllMembersAsync().GetAwaiter().GetResult().Select(x => x.Id).ToArray();
+
+                    var query = col.Find(x => x.Name.StartsWith(Name.ToLower()) && users.Contains(x.Owner));
+
+                    if(query.Count() == 0)
+                    {
+                        await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+                            new DiscordInteractionResponseBuilder()
+                            .WithContent("Could not find a character in this server with that name."));
+                        return;
+                    }
+
+                    await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+                        User.Active.BuildSheet(0));
                 }
                 else
                 {
@@ -223,7 +242,7 @@ namespace Runestone.Commands
                     int v = Math.Abs(int.Parse(Value));
                     int old = actor.Vars[Variable.ToLower()];
 
-                    actor.Vars[Variable] = v;
+                    actor.Vars[Variable.ToLower()] = v;
                     if(Variable == "health")
                     {
                         actor.Health = actor.Vars["health"];

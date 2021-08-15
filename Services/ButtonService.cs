@@ -58,8 +58,16 @@ namespace Runestone.Services
             }
             else if (e.Id.StartsWith("s"))
             {
-                int page = int.Parse(e.Id.Substring(1));
-                await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, u.Active.BuildSheet(page));
+                string[] args = e.Id.Split(",");
+                int page = int.Parse(args[1]);
+
+                int id = int.Parse(args[2]);
+
+                var col = database.GetCollection<Actor>("Actors");
+
+                var C = col.FindById(id);
+
+                await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, C.BuildSheet(page));
             }
             
             else if (e.Id.StartsWith("dl"))

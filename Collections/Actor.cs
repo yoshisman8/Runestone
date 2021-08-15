@@ -227,8 +227,8 @@ namespace Runestone.Collections
 
             var buttons = new List<DiscordComponent>()
             {
-                new DiscordButtonComponent(ButtonStyle.Primary,"s0","Main Page"),
-                new DiscordButtonComponent(ButtonStyle.Primary,"s1","Skills")
+                new DiscordButtonComponent(ButtonStyle.Primary,"s,0,"+Id,"Main Page"),
+                new DiscordButtonComponent(ButtonStyle.Primary,"s,1,"+Id,"Skills")
             };
 
             if (Talents.Count > 0)
@@ -236,7 +236,7 @@ namespace Runestone.Collections
                 int TalentPages = (int)Math.Ceiling(((double)Talents.Count / (double)4));
                 for (int t = 0; t < TalentPages; t++)
                 {
-                    buttons.Add(new DiscordButtonComponent(ButtonStyle.Primary, "s" + (2 + t), "Talents (" + (t + 1) + ")"));
+                    buttons.Add(new DiscordButtonComponent(ButtonStyle.Primary, "s," + (2 + t)+","+Id, "Talents (" + (t + 1) + ")"));
                 }
             }
             
