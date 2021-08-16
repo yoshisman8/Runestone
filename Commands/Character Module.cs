@@ -853,7 +853,7 @@ namespace Runestone.Commands
             {
                 await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                     new DiscordInteractionResponseBuilder()
-                    .WithContent("Could not find any Talent or Action you have access to with that name."));
+                    .WithContent("Could not find any item you have access to with that name."));
                 return;
             }
             else if (query.Count > 1)
