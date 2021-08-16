@@ -251,6 +251,11 @@ namespace Runestone.Services
 
                     if (!A.Image.NullorEmpty()) builder.WithThumbnail(A.Image);
                 }
+                else
+                {
+                    builder.WithTitle("Someone made a " + data.Skill + " check!");
+                }
+
                 if (data.Action > -1)
                 {
                     var col = database.GetCollection<Actionable>("Actionables");
@@ -261,10 +266,7 @@ namespace Runestone.Services
 
                     builder.AddField(Ac.Name, A != null ? ReplaceSymbols(Ac.Summary(), A) : Ac.Summary());
                 }
-                else
-                {
-                    builder.WithTitle("Someone made a " + data.Skill + " check!");
-                }
+                
 
                 if (data.Discipline != "None")
                 {

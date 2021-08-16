@@ -40,7 +40,7 @@ namespace Runestone.Commands
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                         new DiscordInteractionResponseBuilder()
                         .AddEmbed(new DiscordEmbedBuilder()
-
+                        .WithDescription()
                         .Build()
                         ));
                     break;
@@ -70,7 +70,7 @@ namespace Runestone.Commands
         public async Task Invite(InteractionContext context)
         {
             await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().WithContent(" ")
+                new DiscordInteractionResponseBuilder()
                 .AddComponents(new DiscordComponent[]
                 {
                     new DiscordLinkButtonComponent("https://discord.com/api/oauth2/authorize?client_id=875437273183817779&permissions=259846044736&scope=applications.commands%20bot","Invite")

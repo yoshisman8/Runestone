@@ -104,7 +104,7 @@ namespace Runestone.Commands
 				Collections.RollData data = new Collections.RollData()
 				{
 					Action = -1,
-					Skill = value,
+					Skill = Skill,
 					Dice = (int)dice.Value,
 					Fortune = fortune,
 					Judgement = judgement,
