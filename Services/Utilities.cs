@@ -531,11 +531,11 @@ namespace Runestone.Services
             {
                 Output = Output.Replace("[" + v.Key +"]", "["+v.Value.ToString()+"]").Replace("[" + v.Key.FirstCharToUpper() + "]", "[" + v.Value.ToString() + "]");
             }
-            if(Output.Contains(":crossed_swords:") && actor.Inventory.Any(x=>x.Type == ItemType.Weapon && x.Equipped))
+            if (Output.Contains("⚔️") && actor.Inventory.Any(x => x.Type == ItemType.Weapon && x.Equipped))
             {
                 var item = actor.Inventory.Where(x => x.Equipped && x.Type == ItemType.Weapon).OrderByDescending(x => x.Var1).FirstOrDefault();
 
-                Output = Output.Replace(":crossed_swords:", "<" + item.Var1 + ">");
+                Output = Output.Replace("⚔️", "{" + item.Var1 + "}");
             }
 
             return Output;
