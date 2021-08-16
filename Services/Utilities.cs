@@ -535,7 +535,7 @@ namespace Runestone.Services
             {
                 var item = actor.Inventory.Where(x => x.Equipped && x.Type == ItemType.Weapon).OrderByDescending(x => x.Var1).FirstOrDefault();
 
-                Output.Replace(":crossed_swords:", "<" + item.Var1 + ">");
+                Output = Output.Replace(":crossed_swords:", "<" + item.Var1 + ">");
             }
 
             return Output;

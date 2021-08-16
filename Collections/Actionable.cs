@@ -54,7 +54,7 @@ namespace Runestone.Collections
         {
             var sb = new StringBuilder();
             sb.Append("(");
-            if (!Skill.NullorEmpty())
+            if (!Skill.NullorEmpty() && Skill != "none")
             {
                 sb.Append(Skill.FirstCharToUpper() + " | ");
             }
