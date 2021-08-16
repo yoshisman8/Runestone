@@ -40,7 +40,6 @@ namespace Runestone.Commands
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                         new DiscordInteractionResponseBuilder()
                         .AddEmbed(new DiscordEmbedBuilder()
-                        .WithDescription()
                         .Build()
                         ));
                     break;
