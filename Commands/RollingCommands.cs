@@ -34,7 +34,7 @@ namespace Runestone.Commands
 			}
 
 			Actor actor = User.Active;
-			if(Skill.ToLower()== "woe" || Skill.ToLower() == "tested")
+			if(Skill.ToLower().Trim() == "woe" || Skill.ToLower().Trim() == "tested")
             {
 				var dice = Roller.Roll("1d20");
 				var data = new Runestone.Collections.RollData()
@@ -67,9 +67,9 @@ namespace Runestone.Commands
 					}));
 				return;
 			}
-			else if(Dictionaries.Skills.TryGetValue(Skill.ToLower(),out string value))
+			else if(Dictionaries.Skills.TryGetValue(Skill.ToLower().Trim(),out string value))
             {
-				if(actor.Conditions.Any(x=>x.Discipline != "none" && x.Skill.ToLower() == Skill.ToLower()))
+				if(actor.Conditions.Any(x=>x.Discipline != "none" && x.Skill.ToLower() == Skill.ToLower().Trim()))
                 {
 					await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
 					new DiscordInteractionResponseBuilder()
@@ -81,7 +81,7 @@ namespace Runestone.Commands
 
 				if(actor.Conditions.Count > 0)
                 {
-					mod -= Utils.ProcessConditions(Skill, actor);
+					mod -= Utils.ProcessConditions(Skill.Trim(), actor);
                 }
 
 				var dice = Roller.Roll("1d20");
@@ -96,15 +96,15 @@ namespace Runestone.Commands
 				int fortune = actor.Vars[value];
 				
 
-                if (Dictionaries.SubSkills.ContainsKey(Skill.ToLower()))
+                if (Dictionaries.SubSkills.ContainsKey(Skill.ToLower().Trim()))
                 {
-					judgement = Math.Max(2, 8-actor.Vars[Skill.ToLower()]);
+					judgement = Math.Max(2, 8-actor.Vars[Skill.ToLower().Trim()]);
                 }
 
 				Collections.RollData data = new Collections.RollData()
 				{
 					Action = -1,
-					Skill = Skill,
+					Skill = Skill.Trim(),
 					Dice = (int)dice.Value,
 					Fortune = fortune,
 					Judgement = judgement,
@@ -128,7 +128,7 @@ namespace Runestone.Commands
             {
 				await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
 					new DiscordInteractionResponseBuilder()
-					.WithContent("Could not find a skill named `"+Skill+"`. Be sure to use the full skill name, replacing any spaces with dashes."));
+					.WithContent("Could not find a skill named `"+Skill.Trim() + "`. Be sure to use the full skill name, replacing any spaces with dashes."));
 				return;
 			}
 			
@@ -150,7 +150,7 @@ namespace Runestone.Commands
 
 			Actor actor = User.Active;
 
-			var action = Utils.Act(context, context.User.Id, Act);
+			var action = Utils.Act(context, context.User.Id, Act.Trim());
 
 			if (action == null)
 			{

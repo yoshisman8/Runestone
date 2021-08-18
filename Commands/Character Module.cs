@@ -247,7 +247,7 @@ namespace Runestone.Commands
                 {
                     
                     int v = Math.Abs(int.Parse(Value));
-                    int old = actor.Vars[Variable.ToLower()];
+                    int old = actor.Vars[Variable.ToLower().Trim()];
 
                     actor.Vars[Variable.ToLower()] = v;
                     if(Variable == "health")
@@ -261,7 +261,7 @@ namespace Runestone.Commands
                     Utils.UpdateActor(actor);
 
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
-                        new DiscordInteractionResponseBuilder().WithContent("Updated **" + Variable + "** variable on " + actor.Name + " from " + old + " to " + v));
+                        new DiscordInteractionResponseBuilder().WithContent("Updated **" + Variable.Trim() + "** variable on " + actor.Name + " from " + old + " to " + v));
                 }
 
             }

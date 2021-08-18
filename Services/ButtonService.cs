@@ -179,7 +179,7 @@ namespace Runestone.Services
             }
             else if (e.Id.StartsWith("itemdel"))
             {
-                int id = int.Parse(e.Id.Substring(6));
+                int id = int.Parse(e.Id.Substring(7));
 
                 var col = database.GetCollection<Item>("Items");
 
