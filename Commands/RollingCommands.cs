@@ -12,6 +12,7 @@ using LiteDB;
 using Runestone.Collections;
 using Dice;
 using Newtonsoft.Json;
+using System.Security.Cryptography;
 
 namespace Runestone.Commands
 {
@@ -83,6 +84,15 @@ namespace Runestone.Commands
                 {
 					mod -= Utils.ProcessConditions(Skill.Trim(), actor);
                 }
+
+				if(Skill.ToLower().Trim() == "sneak" ||
+					Skill.ToLower().Trim() == "reflex" ||
+					Skill.ToLower().Trim() == "maneuver" ||
+					Skill.ToLower().Trim() == "climb" ||
+					Skill.ToLower().Trim() == "jump")
+				{
+					mod -= actor.GetArmorPenalty();
+				}
 
 				var dice = Roller.Roll("1d20");
 
@@ -372,9 +382,19 @@ namespace Runestone.Commands
 						return;
 					}
 
+
 					if (actor.Conditions.Count > 0)
 					{
 						data.Modifiers -= Utils.ProcessConditions(action.Skill.ToLower(), actor);
+					}
+
+					if (action.Skill.ToLower().Trim() == "sneak" ||
+					action.Skill.ToLower().Trim() == "reflex" ||
+					action.Skill.ToLower().Trim() == "maneuver" ||
+					action.Skill.ToLower().Trim() == "climb" ||
+					action.Skill.ToLower().Trim() == "jump")
+					{
+						data.Modifiers -= actor.GetArmorPenalty();
 					}
 
 					if (overwrite != Overwrite.None)

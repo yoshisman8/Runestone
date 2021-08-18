@@ -362,8 +362,16 @@ namespace Runestone.Services
                     {
                         data.Modifiers -= utils.ProcessConditions(data.Skill, actor);
                     }
+					if (data.Skill.ToLower().Trim() == "sneak" ||
+					data.Skill.ToLower().Trim() == "reflex" ||
+					data.Skill.ToLower().Trim() == "maneuver" ||
+					data.Skill.ToLower().Trim() == "climb" ||
+					data.Skill.ToLower().Trim() == "jump")
+					{
+						data.Modifiers -= actor.GetArmorPenalty();
+					}
 
-                    var embed = utils.EmbedRoll(data);
+					var embed = utils.EmbedRoll(data);
 
                     string serial = data.Serialize();
 

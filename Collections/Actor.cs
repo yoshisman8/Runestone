@@ -247,15 +247,21 @@ namespace Runestone.Collections
             return builder;
         }
 
-        /// <summary>
-        /// Builds Icon bars.
-        /// 1 = Health
-        /// 2 = Energy
-        /// 3 = Woe
-        /// </summary>
-        /// <param name="Res"></param>
-        /// <returns></returns>
-        public string BuildBar(int Res)
+		public int GetArmorPenalty()
+		{
+
+			return Inventory.Where(x=> (x.Type== ItemType.Armor || x.Type == ItemType.Shield) && x.Equipped).Select(x => Math.Abs(x.Var2)).Sum();
+		}
+
+		/// <summary>
+		/// Builds Icon bars.
+		/// 1 = Health
+		/// 2 = Energy
+		/// 3 = Woe
+		/// </summary>
+		/// <param name="Res"></param>
+		/// <returns></returns>
+		public string BuildBar(int Res)
         {
             int max = 0;
             var sb = new StringBuilder();
