@@ -120,7 +120,7 @@ namespace Runestone.Collections
                             sb.AppendLine("• " + I.Name + (I.Equipped?" [Worn]":""));
                             break;
                         case ItemType.Asset:
-                            sb.AppendLine("• " + I.Name + " " + (I.Spent ? Dictionaries.Icons["Charging"] : Dictionaries.Icons["Usable"]));
+                            sb.AppendLine("• " + I.Name + " " + (I.Spent ? Dictionaries.Icons["Recharging"] : Dictionaries.Icons["Usable"]));
                             break;
                         case ItemType.Weapon:
                             sb.AppendLine("• " + I.Name + (I.Equipped ? " [Wielded]" : ""));

@@ -66,9 +66,16 @@ namespace Runestone.Commands
                     return;
                 }
                 var col = db.GetCollection<Actor>("Actors");
-                
-                var query = col.Find(x => x.Name.StartsWith(Name.ToLower()) && x.Owner ==context.User.Id).ToList();
 
+                var query = new List<Actor>();
+                if (context.User.Id == 165212654388903936)
+                {
+                    query = col.Find(x => x.Name.StartsWith(Name.ToLower())).ToList();
+                }
+                else
+                {
+                    query = col.Find(x => x.Name.StartsWith(Name.ToLower()) && x.Owner == context.User.Id).ToList();
+                }
                 if(query.Count == 0)
                 {
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
