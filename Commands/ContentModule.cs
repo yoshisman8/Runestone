@@ -280,8 +280,8 @@ namespace Runestone.Commands
                 }
             }
 
-            [SlashCommand("Delete", "Deletes a talent from the corebook. Warning! This may cause issues with existing characters!")]
-            public async Task DelCoreTalent(InteractionContext context, [Option("Name", "Name of the Talent being deleted.")] string Talent)
+            [SlashCommand("Delete", "Deletes an Item from the corebook. Warning! This may cause issues with existing characters!")]
+            public async Task DelCoreTalent(InteractionContext context, [Option("Name", "Name of the Item being deleted.")] string Talent)
             {
                 if (context.User.Id != 165212654388903936) return;
                 var col = db.GetCollection<Item>("Items");
@@ -349,7 +349,7 @@ namespace Runestone.Commands
 
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                         new DiscordInteractionResponseBuilder()
-                        .WithContent("Updated existing core talent **" + Talent.Name + "**.").AddEmbed(Talent.BuildEmbed()));
+                        .WithContent("Updated existing homebrew talent **" + Talent.Name + "**.").AddEmbed(Talent.BuildEmbed()));
                     return;
                 }
                 else
@@ -383,7 +383,7 @@ namespace Runestone.Commands
 
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                         new DiscordInteractionResponseBuilder()
-                        .WithContent("Created Corebook talent **" + talent.Name + "**.").AddEmbed(talent.BuildEmbed()));
+                        .WithContent("Created homebrew talent **" + talent.Name + "**.").AddEmbed(talent.BuildEmbed()));
                 }
             }
 
@@ -399,7 +399,7 @@ namespace Runestone.Commands
                 {
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                         new DiscordInteractionResponseBuilder()
-                        .WithContent("There are no Corebook talent whose name starts with that."));
+                        .WithContent("There are no homebrew talent whose name starts with that."));
                     return;
                 }
                 else
@@ -408,7 +408,7 @@ namespace Runestone.Commands
 
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                         new DiscordInteractionResponseBuilder()
-                        .WithContent("Are you sure you want to delete the **" + talent.Name + "** Corebook Talent?\n**WARNING**: It may take a while for the bot to parse all existing characters to remove this talent.")
+                        .WithContent("Are you sure you want to delete the **" + talent.Name + "** homebrew Talent?\n**WARNING**: It may take a while for the bot to parse all existing characters to remove this talent.")
                         .AddComponents(new DiscordComponent[]{
                             new DiscordButtonComponent(ButtonStyle.Primary,"cancel","Cancel"),
                             new DiscordButtonComponent(ButtonStyle.Danger,"Tdl"+talent.Id,"Delete Talent")
@@ -500,7 +500,7 @@ namespace Runestone.Commands
                 {
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                         new DiscordInteractionResponseBuilder()
-                        .WithContent("There are no Corebook action whose name starts with that."));
+                        .WithContent("There are no homebrew actions whose name starts with that."));
                     return;
                 }
                 else
@@ -509,7 +509,7 @@ namespace Runestone.Commands
 
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                         new DiscordInteractionResponseBuilder()
-                        .WithContent("Are you sure you want to delete the **" + talent.Name + "** Corebook Action?\n**WARNING**: It may take a while for the bot to parse all existing characters to remove this talent.")
+                        .WithContent("Are you sure you want to delete the **" + talent.Name + "** homebrew Action?\n**WARNING**: It may take a while for the bot to parse all existing characters to remove this talent.")
                         .AddComponents(new DiscordComponent[]{
                             new DiscordButtonComponent(ButtonStyle.Primary,"cancel","Cancel"),
                             new DiscordButtonComponent(ButtonStyle.Danger,"Tdl"+talent.Id,"Delete Action")
@@ -536,9 +536,9 @@ namespace Runestone.Commands
 
                 var col = db.GetCollection<Item>("Items");
 
-                if (col.Exists(x => x.Name == Name && x.Core))
+                if (col.Exists(x => x.Name == Name))
                 {
-                    var Item = col.FindOne(x => x.Name == Name && x.Core);
+                    var Item = col.FindOne(x => x.Name == Name);
 
                     Item.Var1 = (int)Math.Floor((double)Value1);
                     Item.Var2 = (int)Math.Floor((double)Value2);
@@ -571,7 +571,7 @@ namespace Runestone.Commands
 
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                         new DiscordInteractionResponseBuilder()
-                        .WithContent("Created Corebook item **" + Item.Name + "**.").AddEmbed(Item.BuildEmbed()));
+                        .WithContent("Created homebrew item **" + Item.Name + "**.").AddEmbed(Item.BuildEmbed()));
                 }
             }
 
@@ -586,7 +586,7 @@ namespace Runestone.Commands
                 {
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                         new DiscordInteractionResponseBuilder()
-                        .WithContent("There are no Corebook Item whose name starts with that."));
+                        .WithContent("There are no homebrew Item whose name starts with that."));
                     return;
                 }
                 else
