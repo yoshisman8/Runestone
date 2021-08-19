@@ -140,7 +140,7 @@ namespace Runestone.Commands
                 {
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                                             new DiscordInteractionResponseBuilder()
-                                            .WithContent("Please type the name of a character to select!"));
+                                            .WithContent("Please type the name of a character to delete!"));
                     return;
                 }
                 var col = db.GetCollection<Actor>("Actors");
@@ -169,6 +169,34 @@ namespace Runestone.Commands
                 }
                 
             }
+			else if(Action == CharCommands.Rename)
+			{
+				if (User.Active == null)
+				{
+					await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+						new DiscordInteractionResponseBuilder()
+						.WithContent("You currently have no Active user to rename. Use the `/Character Select` command to select a character."));
+					return;
+				}
+				if (Name.NullorEmpty())
+				{
+					await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+							new DiscordInteractionResponseBuilder()
+							.WithContent("Input the name of the character you wish to rename!"));
+					return;
+				}
+
+				var actor = User.Active;
+				string old = actor.Name;
+				actor.Name = Name;
+
+				Utils.UpdateActor(actor);
+
+				await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+						new DiscordInteractionResponseBuilder()
+						.WithContent($"Renamed character {old} to {Name}!"));
+				return;
+			}
         }
         public enum CharCommands
         {
@@ -179,7 +207,9 @@ namespace Runestone.Commands
             [ChoiceName("Create Character")] 
             Create =2,
             [ChoiceName("Delete Character")]
-            Delete = 3
+            Delete = 3,
+			[ChoiceName("Rename Character")]
+			Rename = 4
         }
         
         [SlashCommand("Set","Sets a variable on your Active Character.")]
