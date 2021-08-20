@@ -484,7 +484,7 @@ namespace Runestone.Commands
 
                     await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                         new DiscordInteractionResponseBuilder()
-                        .WithContent("Created Corebook action **" + talent.Name + "**.").AddEmbed(talent.BuildEmbed()));
+                        .WithContent("Created homebrew action **" + talent.Name + "**.").AddEmbed(talent.BuildEmbed()));
                 }
             }
 
