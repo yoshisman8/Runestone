@@ -383,6 +383,8 @@ namespace Runestone.Services
 
                     data.Judgement -= actor.Vars[data.Skill];
 
+					data.Fortune = actor.Vars[Dictionaries.Skills[data.Skill]];
+
                     if (actor.Conditions.Any(x => x.Discipline != "none" && x.Skill.ToLower() == data.Skill.ToLower()))
                     {
                         await e.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
@@ -395,11 +397,8 @@ namespace Runestone.Services
                     {
                         data.Modifiers -= utils.ProcessConditions(data.Skill, actor);
                     }
-					if (data.Skill.ToLower().Trim() == "sneak" ||
-					data.Skill.ToLower().Trim() == "reflex" ||
-					data.Skill.ToLower().Trim() == "maneuver" ||
-					data.Skill.ToLower().Trim() == "climb" ||
-					data.Skill.ToLower().Trim() == "jump")
+
+					if (data.Skill.ToLower().Trim() == "sneak" || data.Skill.ToLower().Trim() == "reflex" || data.Skill.ToLower().Trim() == "maneuver" || data.Skill.ToLower().Trim() == "climb" || data.Skill.ToLower().Trim() == "jump")
 					{
 						data.Modifiers -= actor.GetArmorPenalty();
 					}
@@ -410,6 +409,7 @@ namespace Runestone.Services
 
                     await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
                         new DiscordInteractionResponseBuilder()
+						.WithContent("")
                         .AddEmbed(embed)
                         .AddComponents(new DiscordComponent[]
                         {

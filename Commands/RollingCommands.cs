@@ -13,6 +13,7 @@ using Runestone.Collections;
 using Dice;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
+using System.Runtime.Serialization.Formatters;
 
 namespace Runestone.Commands
 {
@@ -98,15 +99,14 @@ namespace Runestone.Commands
 
 				int judgement = 8;
 
-				if (overwrite != Overwrite.None)
-				{
-					judgement = actor.Vars[overwrite.ToString()];
-				}
-
 				int fortune = actor.Vars[value];
 				
+				if (overwrite != Overwrite.None)
+				{
+					fortune = actor.Vars[overwrite.ToString()];
+				}
 
-                if (Dictionaries.SubSkills.ContainsKey(Skill.ToLower().Trim()))
+				if (Dictionaries.SubSkills.ContainsKey(Skill.ToLower().Trim()))
                 {
 					judgement = Math.Max(2, 8-actor.Vars[Skill.ToLower().Trim()]);
                 }
@@ -399,11 +399,11 @@ namespace Runestone.Commands
 
 					if (overwrite != Overwrite.None)
 					{
-						fortune = actor.Vars[overwrite.ToString()];
+						data.Fortune = actor.Vars[overwrite.ToString()];
 					}
                     else
                     {
-						fortune = actor.Vars[discipline];
+						data.Fortune = actor.Vars[discipline];
                     }
 
 					var embed = Utils.EmbedRoll(data);
