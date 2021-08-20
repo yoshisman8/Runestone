@@ -203,30 +203,63 @@ namespace Runestone.Services
             {
                 RollData data = new RollData().Deserialize(e.Id.Substring(5));
 
+				
                 var actors = database.GetCollection<Actor>("Actors");
 
                 var a = actors.FindById(data.Actor);
 
-                a.Energy -= 1;
 
-                a.Woe++;
+				if (e.User.Id != a.Owner)
+				{
+					var Embed = utils.EmbedRoll(data);
 
-                utils.UpdateActor(a);
+					string serial = data.Serialize();
 
-                data.Boosts++;
+					await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
+						new DiscordInteractionResponseBuilder()
+						.WithContent("Only the owner of this character can Boost this roll.")
+						.AddEmbed(Embed)
+						.AddComponents(new DiscordComponent[]
+						{
+							new DiscordButtonComponent(ButtonStyle.Primary,"boost"+serial,"Boost",false, data.Skill=="tested"?new DiscordComponentEmoji(875526328500232203):new DiscordComponentEmoji(875526327774617671))
+						}));
+					return;
+				}
+				else
+				{
 
-                var Embed = utils.EmbedRoll(data);
+					string Response = "";
 
-                string serial = data.Serialize();
+					a.Energy -= 1;
 
-                await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
-                    new DiscordInteractionResponseBuilder()
-                    .WithContent($"{a.Name}'s Resolve is being tested...\nSpent {data.Boosts} Energy and Woe boosting!")
-                    .AddEmbed(Embed)
-                    .AddComponents(new DiscordComponent[]
-                    {
-                        new DiscordButtonComponent(ButtonStyle.Primary,"boost"+serial,"Boost",false, new DiscordComponentEmoji(875526328500232203))
-                    }));
+					data.Boosts++;
+
+					if (data.Skill == "tested")
+					{
+						a.Woe++;
+						Response = $"{a.Name}'s Resolve is being tested...\nSpent {data.Boosts} Energy and Woe boosting!";
+					}
+					else
+					{
+						Response = $"{a.Name} spent {data.Boosts} energy boosting!";
+					}
+
+					utils.UpdateActor(a);					
+
+					var Embed = utils.EmbedRoll(data);
+
+					string serial = data.Serialize();
+
+					await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
+					new DiscordInteractionResponseBuilder()
+						.WithContent(Response)
+						.AddEmbed(Embed)
+						.AddComponents(new DiscordComponent[]
+						{
+							new DiscordButtonComponent(ButtonStyle.Primary,"boost"+serial,"Boost",false, data.Skill=="tested"?new DiscordComponentEmoji(875526328500232203):new DiscordComponentEmoji(875526327774617671))
+						}));
+				}
+				
             }
             else if (e.Id.StartsWith("init"))
             {
