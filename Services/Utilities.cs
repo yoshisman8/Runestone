@@ -654,7 +654,7 @@ namespace Runestone.Services
         {
             {"Health","<:HP:875522342904803339>" },
             {"Energy","<:EN:875522342955135046>" },
-            {"Woe","<:HP:875522342904803339>" },
+            {"Woe","<:WoeBar:875522342976106506>" },
             {"Empty","<:Empty:875522342988693545>" },
             {"Armor","<:ArmorFull:875522343055790200>" },
             {"ArmorEmpty","<:ArmorEmpty:875522343080976404>" }
